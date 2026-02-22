@@ -1,6 +1,9 @@
 import React from 'react';
 import { CheckCircle2, ExternalLink, ArrowLeft, Folder, PlayCircle, Youtube, Globe, DownloadCloud, Sparkles, ShieldCheck, Download } from 'lucide-react';
 import Link from 'next/link';
+import { getDb } from '@/lib/db';
+import { redirect } from 'next/navigation';
+import AutoRefresh from '@/components/AutoRefresh';
 
 const resources = [
     {
@@ -75,9 +78,6 @@ const resources = [
     }
 ];
 
-import { getDb } from '@/lib/db';
-import { redirect } from 'next/navigation';
-
 export default async function SuccessPage({
     searchParams
 }: {
@@ -113,9 +113,13 @@ export default async function SuccessPage({
                     <ShieldCheck className="w-16 h-16 text-neutral-300 mx-auto mb-4" />
                     <h1 className="text-2xl font-bold mb-2">Akses Terkunci</h1>
                     {!isPaid ? (
-                        <p className="text-neutral-600 mb-6">
-                            Pembayaran Anda berstatus <strong>Pending</strong>. Harap selesaikan pembayaran melalui link Mayar terlebih dahulu. Jika bingung, silakan hubungi WhatsApp Admin.
-                        </p>
+                        <>
+                            <p className="text-neutral-600 mb-6">
+                                Pembayaran Anda berstatus <strong>Pending</strong>. Harap selesaikan pembayaran melalui link Mayar terlebih dahulu. Jika bingung, silakan hubungi WhatsApp Admin.
+                            </p>
+                            {/* Auto Refresh only applies when not paid but email matches explicitly via Mayar's redirect back */}
+                            {isEmailMatched && <AutoRefresh id={id} email={email} />}
+                        </>
                     ) : (
                         <p className="text-neutral-600 mb-6">
                             Transaksi Anda sudah Lunas! Namun demi keamanan, masukkan <strong>Email</strong> yang Anda gunakan saat pembelian untuk membuka brankas file.
