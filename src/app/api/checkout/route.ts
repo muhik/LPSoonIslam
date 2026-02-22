@@ -53,8 +53,10 @@ export async function POST(request: Request) {
                 items: [
                     {
                         name: "14.000++ Worksheet Anak",
+                        description: "Pembelian Bundle Digital",
                         quantity: 1,
-                        price: parseInt(amount, 10)
+                        price: parseInt(amount, 10),
+                        rate: parseInt(amount, 10)
                     }
                 ]
             })
