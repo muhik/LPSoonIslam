@@ -1,7 +1,7 @@
 export const runtime = 'edge';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
-import bcrypt from 'bcryptjs';
+
 import { encrypt } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
@@ -20,7 +20,15 @@ export async function POST(request: Request) {
         }
 
         const adminPasswordHash = row.rows[0].value as string;
-        const isValid = await bcrypt.compare(password, adminPasswordHash);
+
+        // Use Web Crypto API instead of bcryptjs for Edge compatibility
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const inputHashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        const isValid = inputHashHex === adminPasswordHash;
 
         if (!isValid) {
             return NextResponse.json({ error: 'Invalid password' }, { status: 401 });

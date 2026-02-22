@@ -1,5 +1,5 @@
 import { createClient, Client } from '@libsql/client/web';
-import bcrypt from 'bcryptjs';
+
 
 // Connection singleton with globalThis for Next.js HMR
 const globalForDb = globalThis as unknown as {
@@ -58,10 +58,16 @@ export async function getDb(): Promise<Client> {
 
       if (adminPassHash.rows.length === 0) {
         const defaultPassword = 'admin'; // VERY SIMPLE password, wait for the actual plan
-        const hash = bcrypt.hashSync(defaultPassword, 10);
+        // Use Web Crypto API instead of bcryptjs for Edge compatibility
+        const encoder = new TextEncoder();
+        const data = encoder.encode(defaultPassword);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
         await db.execute({
           sql: 'INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)',
-          args: ['admin_password_hash', hash]
+          args: ['admin_password_hash', hashHex]
         });
         console.log('Initialized default admin password: admin');
       }

@@ -2,7 +2,7 @@ export const runtime = 'edge';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
-import bcrypt from 'bcryptjs';
+
 
 export async function GET() {
     try {
@@ -45,13 +45,19 @@ export async function POST(request: Request) {
 
         // Update Password if provided
         if (new_password) {
-            const hash = await bcrypt.hash(new_password, 10);
+            // Use Web Crypto API instead of bcryptjs for Edge compatibility
+            const encoder = new TextEncoder();
+            const data = encoder.encode(new_password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
             await db.execute({
                 sql: `
                     INSERT INTO settings (key, value) VALUES ('admin_password_hash', ?)
                     ON CONFLICT(key) DO UPDATE SET value = excluded.value
                 `,
-                args: [hash]
+                args: [hashHex]
             });
         }
 
