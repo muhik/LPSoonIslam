@@ -66,16 +66,12 @@ export default function CheckoutForm() {
                     <input
                         type="number"
                         name="amount"
-                        min="10000"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
-                        onInvalid={(e) => (e.target as HTMLInputElement).setCustomValidity('Minimal transfer adalah Rp 10.000')}
-                        onInput={(e) => (e.target as HTMLInputElement).setCustomValidity('')}
                         className="w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-premium-500 focus:border-premium-500 text-lg outline-none transition-shadow font-normal text-neutral-700"
                         required
                     />
                 </div>
-                <p className="text-xs text-neutral-500 mt-2">*Minimal Rp10.000</p>
             </div>
 
             {/* Buyer Info */}
