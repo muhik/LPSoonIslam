@@ -48,7 +48,18 @@ export async function POST(request: Request) {
             // Use Web Crypto API instead of bcryptjs for Edge compatibility
             const encoder = new TextEncoder();
             const data = encoder.encode(new_password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+            // Edge Runtime global crypto fallback pattern
+            let subtleCrypto: SubtleCrypto;
+
+            if (typeof crypto !== 'undefined' && crypto.subtle) {
+                subtleCrypto = crypto.subtle;
+            } else {
+                const nodeCrypto = require('crypto');
+                subtleCrypto = nodeCrypto.webcrypto.subtle;
+            }
+
+            const hashBuffer = await subtleCrypto.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 

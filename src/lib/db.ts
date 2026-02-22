@@ -61,7 +61,20 @@ export async function getDb(): Promise<Client> {
         // Use Web Crypto API instead of bcryptjs for Edge compatibility
         const encoder = new TextEncoder();
         const data = encoder.encode(defaultPassword);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+
+        // Edge Runtime global crypto fallback pattern
+        let subtleCrypto: SubtleCrypto;
+
+        // Next.js Dev/Node environment fallback vs Cloudflare Edge global
+        if (typeof crypto !== 'undefined' && crypto.subtle) {
+          subtleCrypto = crypto.subtle;
+        } else {
+          // Safe static import for local Node.js environment during dev
+          const nodeCrypto = require('crypto');
+          subtleCrypto = nodeCrypto.webcrypto.subtle;
+        }
+
+        const hashBuffer = await subtleCrypto.digest('SHA-256', data);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
