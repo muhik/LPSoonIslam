@@ -31,12 +31,12 @@ export default function Home() {
                 {/* Product Images */}
                 <div className="relative w-full max-w-2xl mx-auto flex flex-col gap-8 mb-12 items-center justify-center">
                     <img
-                        src="/Ebook ke2.png"
+                        src="/ebook_ke2.png"
                         alt="Bundle 14.000+ Worksheet Anak Islam"
                         className="w-full h-auto rounded-3xl shadow-2xl border border-neutral-200 object-contain hover:scale-[1.02] transition-transform duration-500 cursor-pointer"
                     />
                     <img
-                        src="/tampak depan.Jpeg"
+                        src="/tampak_depan.jpeg"
                         alt="Detail Isi Produk"
                         className="w-full h-auto rounded-3xl shadow-2xl border border-neutral-200 object-contain hover:scale-[1.02] transition-transform duration-500 cursor-pointer"
                     />
