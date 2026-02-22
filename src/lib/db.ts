@@ -1,5 +1,4 @@
-import { createClient, Client } from '@libsql/client';
-import path from 'path';
+import { createClient, Client } from '@libsql/client/web';
 import bcrypt from 'bcryptjs';
 
 // Connection singleton with globalThis for Next.js HMR
@@ -13,7 +12,7 @@ let isInitialized = false;
 export async function getDb(): Promise<Client> {
   if (!db) {
     // Determine the URL based on environment (local file by default, or Turso URL)
-    const url = process.env.TURSO_DATABASE_URL || `file:${path.join(process.cwd(), 'data.db')}`;
+    const url = process.env.TURSO_DATABASE_URL || 'file:data.db';
     const authToken = process.env.TURSO_AUTH_TOKEN;
 
     db = createClient({
