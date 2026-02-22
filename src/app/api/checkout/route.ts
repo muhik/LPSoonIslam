@@ -37,23 +37,19 @@ export async function POST(request: Request) {
         const requestUrl = new URL(request.url);
         const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
 
-        const mayarResponse = await fetch('https://api.mayar.id/hl/v1/payment/create', {
+        const mayarResponse = await fetch('https://api.mayar.id/hl/v1/invoice/create', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${mayarApiKey}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                name: `Akses 14.000 Worksheet (Bayar Seikhlasnya)`,
-                description: `Pembelian produk digital edukasi oleh ${name}`,
-                amount: parseInt(amount, 10),
-                customer_name: name,
+                name: name, // Mayar uses 'name' for Customer Name in invoice/create
                 email: email,
+                amount: parseInt(amount, 10),
                 mobile: phone,
-                redirect_url: `${baseUrl}/success?id=${newId}&email=${encodeURIComponent(email)}`,
-                is_open_amount: false,
-                is_quantity: false,
-                is_amount_custom: false
+                redirectUrl: `${baseUrl}/success?id=${newId}&email=${encodeURIComponent(email)}`,
+                description: `Akses 14.000 Worksheet (Bayar Seikhlasnya)`
             })
         });
 
