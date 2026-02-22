@@ -2,36 +2,39 @@ export const runtime = 'edge';
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 
-export async function GET(
-    request: Request,
-    context: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request) {
     try {
-        const { id: rawId } = await context.params;
-        const id = parseInt(rawId, 10);
-
-        // Extract email from query params for security validation
         const { searchParams } = new URL(request.url);
         const email = searchParams.get('email');
+        const idParam = searchParams.get('id');
 
-        if (isNaN(id) || !email) {
-            return NextResponse.json({ error: 'Missing id or email' }, { status: 400 });
+        if (!email && !idParam) {
+            return NextResponse.json({ error: 'Missing email or id' }, { status: 400 });
         }
 
         const db = await getDb();
-        const result = await db.execute({
-            sql: 'SELECT status, email, mayar_id FROM transactions WHERE id = ?',
-            args: [id]
-        });
+        let tx: any = null;
 
-        const tx = result.rows[0] as any;
+        if (idParam) {
+            const result = await db.execute({
+                sql: 'SELECT id, status, email, name, amount, mayar_id FROM transactions WHERE id = ?',
+                args: [parseInt(idParam, 10)]
+            });
+            tx = result.rows[0];
+        } else if (email) {
+            const result = await db.execute({
+                sql: 'SELECT id, status, email, name, amount, mayar_id FROM transactions WHERE email = ? ORDER BY id DESC LIMIT 1',
+                args: [email]
+            });
+            tx = result.rows[0];
+        }
 
         if (!tx) {
             return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
         }
 
         // Validate that the email matches the transaction (Security layer)
-        if (tx.email.toLowerCase() !== email.toLowerCase()) {
+        if (email && tx.email.toLowerCase() !== email.toLowerCase()) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -53,10 +56,10 @@ export async function GET(
                         // Webhook missed it! Let's update our database manually
                         await db.execute({
                             sql: `UPDATE transactions SET status = 'PAID' WHERE id = ?`,
-                            args: [id]
+                            args: [tx.id]
                         });
-                        console.log(`Polling fallback detected PAID status for transaction ${id}, manually updated.`);
-                        return NextResponse.json({ status: 'PAID' });
+                        console.log(`Polling fallback detected PAID status for transaction ${tx.id}, manually updated.`);
+                        tx.status = 'PAID';
                     }
                 }
             } catch (pollErr) {
@@ -65,7 +68,7 @@ export async function GET(
             }
         }
 
-        return NextResponse.json({ status: tx.status });
+        return NextResponse.json({ transaction: tx });
 
     } catch (error) {
         console.error('Error fetching transaction status:', error);

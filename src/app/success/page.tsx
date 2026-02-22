@@ -1,12 +1,9 @@
-export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
+"use client";
 
-import React from 'react';
-import { CheckCircle2, ExternalLink, ArrowLeft, Folder, PlayCircle, Youtube, Globe, DownloadCloud, Sparkles, ShieldCheck, Download } from 'lucide-react';
+import React, { useEffect, useState, Suspense } from 'react';
+import { CheckCircle2, ArrowLeft, Folder, PlayCircle, Youtube, Globe, DownloadCloud, Sparkles, ShieldCheck, Download } from 'lucide-react';
 import Link from 'next/link';
-import { getDb } from '@/lib/db';
-import { redirect } from 'next/navigation';
-import AutoRefresh from '@/components/AutoRefresh';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const resources = [
     {
@@ -81,47 +78,83 @@ const resources = [
     }
 ];
 
-export default async function SuccessPage(props: {
-    searchParams: Promise<{ id?: string; email?: string }>;
-}) {
-    const searchParams = await props.searchParams;
-    const { id, email } = searchParams;
+function SuccessContent() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
-    // If we have an ID, fetch the specific transaction
-    let tx: any = null;
-    let db: any = null;
+    const emailStr = searchParams.get('email');
+    const idStr = searchParams.get('id');
 
-    try {
-        db = await getDb();
-        if (id) {
-            const result = await db.execute({
-                sql: 'SELECT * FROM transactions WHERE id = ?',
-                args: [parseInt(id, 10)]
-            });
-            tx = result.rows[0];
-        } else if (email) {
-            // If we only have email (e.g., user searched for their transaction), get the latest one
-            const result = await db.execute({
-                sql: 'SELECT * FROM transactions WHERE email = ? ORDER BY id DESC LIMIT 1',
-                args: [email]
-            });
-            tx = result.rows[0];
+    const [tx, setTx] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [emailInput, setEmailInput] = useState(emailStr || '');
+
+    // Function to check transaction from our new edge API
+    const checkTransaction = async (queryEmail: string, queryId?: string | null) => {
+        if (!queryEmail && !queryId) return;
+
+        setLoading(true);
+        setErrorMsg('');
+
+        try {
+            let url = `/api/transaction/verify?`;
+            const params = new URLSearchParams();
+            if (queryEmail) params.append('email', queryEmail);
+            if (queryId) params.append('id', queryId);
+            url += params.toString();
+
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                setTx(data.transaction);
+            } else {
+                setTx(null);
+                if (queryEmail || queryId) {
+                    setErrorMsg('Transaksi tidak ditemukan atau email salah.');
+                }
+            }
+        } catch (err) {
+            setTx(null);
+            setErrorMsg('Gagal memeriksa status transaksi.');
+        } finally {
+            setLoading(false);
         }
-    } catch (err) {
-        console.error("Database error on success page:", err);
-    }
+    };
 
-    // Security Gate: Check if Paid and Email Maps Correctly
+    // Initial load
+    useEffect(() => {
+        if (emailStr || idStr) {
+            checkTransaction(emailStr || '', idStr);
+        }
+    }, [emailStr, idStr]);
+
+    // Polling logic when PENDING
+    useEffect(() => {
+        if (tx && tx.status === 'PENDING') {
+            const interval = setInterval(() => {
+                // Poll using the exact same parameters that were successful the first time
+                checkTransaction(emailStr || tx.email, tx.id.toString());
+            }, 3000);
+            return () => clearInterval(interval);
+        }
+    }, [tx, emailStr]);
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        router.push(`/success?email=${encodeURIComponent(emailInput)}`);
+    };
+
     const isPaid = tx?.status === 'PAID';
-    const isEmailMatched = tx && email && email.toLowerCase() === tx.email.toLowerCase();
+    const isMatched = tx && emailStr && tx.email.toLowerCase() === emailStr.toLowerCase();
 
-    // If Not Paid / Not Matched / No Transaction Found, Show the Locked Form Gate
-    if (!tx || !isPaid || !isEmailMatched) {
+    if (!tx || !isPaid || !isMatched) {
         return (
             <main className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-neutral-200 text-center">
                     <ShieldCheck className="w-16 h-16 text-neutral-300 mx-auto mb-4" />
                     <h1 className="text-2xl font-bold mb-2">Cek Status Akses</h1>
+
                     {!tx ? (
                         <p className="text-neutral-600 mb-6">
                             Sistem sedang menyinkronkan data pembayaran dari Mayar. Silakan masukkan <strong>Email</strong> yang Anda gunakan saat pembelian untuk melacak status transaksi Anda.
@@ -129,10 +162,15 @@ export default async function SuccessPage(props: {
                     ) : !isPaid ? (
                         <>
                             <p className="text-neutral-600 mb-6">
-                                Trx <strong>#{tx.id}</strong> berstatus <strong>Pending</strong>. Harap selesaikan pembayaran melalui link Mayar. Sistem akan otomatis merefresh halaman ini jika lunas.
+                                Trx <strong>#{tx.id}</strong> berstatus <strong>Pending</strong>. Harap selesaikan pembayaran melalui link Mayar. Sistem sedang menunggu dan akan otomatis memproses jika lunas.
                             </p>
-                            {/* Auto Refresh only applies when not paid but email matches explicitly */}
-                            {isEmailMatched && <AutoRefresh id={tx.id.toString()} email={email} />}
+                            <div className="flex items-center gap-3 justify-center text-sm font-medium text-amber-600 mb-6 bg-amber-50 p-3 rounded-lg border border-amber-200">
+                                <span className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                                </span>
+                                Menunggu Pembayaran...
+                            </div>
                         </>
                     ) : (
                         <p className="text-neutral-600 mb-6">
@@ -140,24 +178,27 @@ export default async function SuccessPage(props: {
                         </p>
                     )}
 
-                    {(!isPaid || !isEmailMatched || !tx) && (
-                        <form className="flex flex-col gap-4 text-left" method="GET">
-                            {/* If we have context of the ID but need email verification */}
-                            {tx && !isEmailMatched && <input type="hidden" name="id" value={tx.id} />}
+                    {errorMsg && (
+                        <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-200">
+                            {errorMsg}
+                        </div>
+                    )}
 
+                    {(!isPaid || !isMatched || !tx) && (
+                        <form className="flex flex-col gap-4 text-left" onSubmit={handleSearch}>
                             <div>
                                 <label className="block text-sm font-semibold mb-1 text-neutral-700">Email Pembeli</label>
                                 <input
                                     type="email"
-                                    name="email"
                                     required
-                                    defaultValue={email || ''}
+                                    value={emailInput}
+                                    onChange={(e) => setEmailInput(e.target.value)}
                                     placeholder="contoh@gmail.com"
                                     className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-premium-500 focus:outline-none"
                                 />
                             </div>
-                            <button type="submit" className="w-full bg-premium-600 hover:bg-premium-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">
-                                {tx ? "Buka Brankas Mode Aman" : "Cek Status Pembayaran"}
+                            <button disabled={loading} type="submit" className="w-full bg-premium-600 hover:bg-premium-700 disabled:opacity-50 text-white font-bold py-3 px-4 rounded-xl transition-colors">
+                                {loading ? "Memeriksa..." : (tx ? "Buka Brankas Mode Aman" : "Cek Status Pembayaran")}
                             </button>
                         </form>
                     )}
@@ -172,24 +213,23 @@ export default async function SuccessPage(props: {
         );
     }
 
-    // Only Render Premium Content if PAID & Email is correctly passed via query params
+    // Only Render Premium Content if PAID & Email matches
     return (
         <main className="min-h-screen bg-neutral-50 flex flex-col items-center py-12 px-4">
             <div className="max-w-3xl w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-neutral-100">
-                {/* Header Area */}
                 <div className="text-center p-8 bg-premium-50 border-b border-premium-100">
                     <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-green-200">
                         <CheckCircle2 className="w-10 h-10" />
                     </div>
 
-                    {/* Facebook Pixel Tracking for Purchase */}
+                    {/* FB Pixel Trigger */}
                     <script
                         dangerouslySetInnerHTML={{
                             __html: `
-                          if (typeof fbq === 'function') {
-                            fbq('track', 'Purchase', { currency: 'IDR', value: ${tx.amount || 10000} });
-                          }
-                        `,
+                              if (typeof fbq === 'function') {
+                                fbq('track', 'Purchase', { currency: 'IDR', value: ${tx.amount || 10000} });
+                              }
+                            `,
                         }}
                     />
 
@@ -199,7 +239,6 @@ export default async function SuccessPage(props: {
                     </p>
                 </div>
 
-                {/* Content Area */}
                 <div className="p-8">
                     <h2 className="text-xl font-bold text-premium-800 mb-6 flex items-center">
                         <Download className="w-6 h-6 mr-3 text-premium-600" />
@@ -240,5 +279,21 @@ export default async function SuccessPage(props: {
                 </div>
             </div>
         </main>
+    );
+}
+
+export default function SuccessPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
+                <div className="animate-pulse flex flex-col items-center">
+                    <div className="w-16 h-16 bg-neutral-200 rounded-full mb-4"></div>
+                    <div className="h-6 w-48 bg-neutral-200 rounded mb-2"></div>
+                    <div className="h-4 w-32 bg-neutral-200 rounded"></div>
+                </div>
+            </div>
+        }>
+            <SuccessContent />
+        </Suspense>
     );
 }
