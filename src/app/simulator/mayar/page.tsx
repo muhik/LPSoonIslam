@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { ShieldCheck, CreditCard } from 'lucide-react';
 import SimulatorSubmitButton from '@/components/SimulatorSubmitButton';
 
+export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export default async function MayarSimulatorPage({

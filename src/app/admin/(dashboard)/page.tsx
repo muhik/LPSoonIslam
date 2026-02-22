@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import React from 'react';
 import { getDb } from '@/lib/db';
 import TransactionTable from '@/components/TransactionTable';
