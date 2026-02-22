@@ -4,8 +4,49 @@ import { getDb } from '@/lib/db';
 
 export async function POST(request: Request) {
     try {
-        // Mayar sends webhook payloads as JSON
-        const body = await request.json();
+        const rawBody = await request.text();
+        const signatureHeader = request.headers.get('x-mayar-signature');
+        const webhookToken = process.env.MAYAR_WEBHOOK_TOKEN;
+
+        // Verify HMAC if Webhook Token is configured
+        if (webhookToken && signatureHeader) {
+            const encoder = new TextEncoder();
+            const keyData = encoder.encode(webhookToken);
+
+            const cryptoKey = await crypto.subtle.importKey(
+                'raw',
+                keyData,
+                { name: 'HMAC', hash: 'SHA-256' },
+                false,
+                ['verify']
+            );
+
+            // Mayar signature is expected to be a hex string, but WebCrypto verify takes ArrayBuffer
+            // We need to generate the HMAC ourselves and compare the hex strings
+            const signKey = await crypto.subtle.importKey(
+                'raw',
+                keyData,
+                { name: 'HMAC', hash: 'SHA-256' },
+                false,
+                ['sign']
+            );
+
+            const signatureBuffer = await crypto.subtle.sign(
+                'HMAC',
+                signKey,
+                encoder.encode(rawBody)
+            );
+
+            const signatureArray = Array.from(new Uint8Array(signatureBuffer));
+            const expectedSignatureHex = signatureArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            if (expectedSignatureHex !== signatureHeader) {
+                console.error('Invalid Mayar webhook signature');
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
+        }
+
+        const body = JSON.parse(rawBody);
         const event = body.event;
         const data = body.data;
 
@@ -13,11 +54,6 @@ export async function POST(request: Request) {
 
         // We only care about successful payments
         if (event === 'payment.success') {
-            // In Mayar, the redirect_url we sent earlier contains the local transaction ID.
-            // However, the cleanest way without custom metadata in the simple `/link/create` endpoint 
-            // is tracking via email/contact, or parsing the redirect URL if Mayar returns it in the payload.
-            // For robust tracing, we can update by customer_email and customer_phone if we don't have the exact tx ID
-
             const email = data.customer?.email;
             const status = data.status; // usually "PAID" or "SETTLED"
 
