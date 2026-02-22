@@ -7,6 +7,7 @@ export async function POST(request: Request) {
         const rawBody = await request.text();
         const signatureHeader = request.headers.get('x-mayar-signature');
         const webhookToken = process.env.MAYAR_WEBHOOK_TOKEN;
+        const db = await getDb();
 
         // Verify HMAC if Webhook Token is configured
         if (webhookToken && signatureHeader) {
@@ -42,6 +43,13 @@ export async function POST(request: Request) {
 
             if (expectedSignatureHex !== signatureHeader) {
                 console.error('Invalid Mayar webhook signature');
+
+                // Track signature mismatch
+                await db.execute({
+                    sql: "INSERT INTO webhook_logs (payload) VALUES (?)",
+                    args: [`[INVALID_SIG] Expected: ${expectedSignatureHex}, Got: ${signatureHeader} | Body: ${rawBody}`]
+                });
+
                 return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
             }
         }
@@ -50,28 +58,30 @@ export async function POST(request: Request) {
         const event = body.event;
         const data = body.data;
 
+        await db.execute({
+            sql: "INSERT INTO webhook_logs (payload) VALUES (?)",
+            args: [rawBody]
+        });
+
         console.log('Received Mayar Webhook:', JSON.stringify({ event, invoice_id: data?.id }, null, 2));
 
-        // We only care about successful payments
-        if (event === 'payment.success') {
-            const email = data.customer?.email;
-            const status = data.status; // usually "PAID" or "SETTLED"
+        // Let's accept ANY event name (payment.success, payment.received, invoice.paid, etc.)
+        // as long as the status is PAID or SETTLED and email matches
+        const email = data?.customer?.email || data?.customer_email || body?.customer_email || data?.email;
+        const status = data?.status || body?.status;
 
-            if (email && (status === 'PAID' || status === 'SETTLED')) {
-                const db = await getDb();
+        if (email && (status === 'PAID' || status === 'SETTLED' || status === 'paid' || status === 'SUCCESS')) {
+            // Update transaction status based on email (Wait for latest pending tx)
+            await db.execute({
+                sql: `
+                    UPDATE transactions 
+                    SET status = 'PAID' 
+                    WHERE email = ? AND status = 'PENDING'
+                `,
+                args: [email]
+            });
 
-                // Update transaction status based on email (Wait for latest pending tx)
-                await db.execute({
-                    sql: `
-                        UPDATE transactions 
-                        SET status = 'PAID' 
-                        WHERE email = ? AND status = 'PENDING'
-                    `,
-                    args: [email]
-                });
-
-                console.log(`Successfully marked transaction for ${email} as PAID via Webhook.`);
-            }
+            console.log(`Successfully marked transaction for ${email} as PAID via Webhook.`);
         }
 
         // Always return 200 OK to Mayar so they don't retry unnecessarily
