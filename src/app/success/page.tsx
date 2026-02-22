@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, ExternalLink, ArrowLeft, Folder, PlayCircle, Youtube, Globe, DownloadCloud, Sparkles } from 'lucide-react';
+import { CheckCircle2, ExternalLink, ArrowLeft, Folder, PlayCircle, Youtube, Globe, DownloadCloud, Sparkles, ShieldCheck, Download } from 'lucide-react';
 import Link from 'next/link';
 
 const resources = [
@@ -75,14 +75,90 @@ const resources = [
     }
 ];
 
-export default function SuccessPage() {
+import { getDb } from '@/lib/db';
+import { redirect } from 'next/navigation';
+
+export default async function SuccessPage({
+    searchParams
+}: {
+    searchParams: { id?: string; email?: string }
+}) {
+    const { id, email } = searchParams;
+
+    if (!id) {
+        redirect('/');
+    }
+
+    const db = await getDb();
+    const result = await db.execute({
+        sql: 'SELECT * FROM transactions WHERE id = ?',
+        args: [parseInt(id, 10)]
+    });
+
+    const tx = result.rows[0] as any;
+
+    if (!tx) {
+        redirect('/');
+    }
+
+    // Security Gate: Ensure the transaction is PAID AND Email Matches the URL explicitly
+    const isPaid = tx.status === 'PAID';
+    const isEmailMatched = email && email.toLowerCase() === tx.email.toLowerCase();
+
+    // If Not Paid / Not Matched, Show the Locked Form Gate
+    if (!isPaid || !isEmailMatched) {
+        return (
+            <main className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
+                <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-neutral-200 text-center">
+                    <ShieldCheck className="w-16 h-16 text-neutral-300 mx-auto mb-4" />
+                    <h1 className="text-2xl font-bold mb-2">Akses Terkunci</h1>
+                    {!isPaid ? (
+                        <p className="text-neutral-600 mb-6">
+                            Pembayaran Anda berstatus <strong>Pending</strong>. Harap selesaikan pembayaran melalui link Mayar terlebih dahulu. Jika bingung, silakan hubungi WhatsApp Admin.
+                        </p>
+                    ) : (
+                        <p className="text-neutral-600 mb-6">
+                            Transaksi Anda sudah Lunas! Namun demi keamanan, masukkan <strong>Email</strong> yang Anda gunakan saat pembelian untuk membuka brankas file.
+                        </p>
+                    )}
+
+                    {isPaid && !isEmailMatched && (
+                        <form className="flex flex-col gap-4 text-left" method="GET">
+                            <input type="hidden" name="id" value={id} />
+                            <div>
+                                <label className="block text-sm font-semibold mb-1 text-neutral-700">Email Pembeli</label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    required
+                                    placeholder="contoh@gmail.com"
+                                    className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-premium-500 focus:outline-none"
+                                />
+                            </div>
+                            <button type="submit" className="w-full bg-premium-600 hover:bg-premium-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">
+                                Buka Brankas Mode Aman
+                            </button>
+                        </form>
+                    )}
+
+                    <div className="mt-6 text-sm">
+                        <Link href="/" className="text-premium-600 hover:underline">
+                            Kembali ke Halaman Utama
+                        </Link>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
+    // Only Render Premium Content if PAID & Email is correctly passed via query params
     return (
         <main className="min-h-screen bg-neutral-50 flex flex-col items-center py-12 px-4">
             <div className="max-w-3xl w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-neutral-100">
                 {/* Header Area */}
                 <div className="text-center p-8 bg-premium-50 border-b border-premium-100">
                     <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-green-200">
-                        <CheckCircle className="w-10 h-10" />
+                        <CheckCircle2 className="w-10 h-10" />
                     </div>
 
                     {/* Facebook Pixel Tracking for Purchase */}
@@ -90,7 +166,7 @@ export default function SuccessPage() {
                         dangerouslySetInnerHTML={{
                             __html: `
                           if (typeof fbq === 'function') {
-                            fbq('track', 'Purchase', { currency: 'IDR', value: 10000 });
+                            fbq('track', 'Purchase', { currency: 'IDR', value: ${tx.amount || 10000} });
                           }
                         `,
                         }}
@@ -98,14 +174,14 @@ export default function SuccessPage() {
 
                     <h1 className="text-3xl font-extrabold text-neutral-900 mb-3 tracking-tight">Pembayaran Berhasil! 🎉</h1>
                     <p className="text-lg text-neutral-600 max-w-xl mx-auto leading-relaxed">
-                        Terima kasih atas apresiasi Anda. Seluruh akses ke <strong>14.000++ Worksheet Anak</strong> dan berbagai bonus premium lainnya sudah bisa diakses di bawah ini.
+                        Terima kasih {tx.name} atas apresiasi Anda. Seluruh akses ke <strong>14.000++ Worksheet Anak</strong> dan berbagai bonus premium lainnya sudah bisa diunduh di bawah ini.
                     </p>
                 </div>
 
                 {/* Content Area */}
                 <div className="p-8">
                     <h2 className="text-xl font-bold text-premium-800 mb-6 flex items-center">
-                        <DownloadCloud className="w-6 h-6 mr-3 text-premium-600" />
+                        <Download className="w-6 h-6 mr-3 text-premium-600" />
                         Daftar Link Akses Materi Anda
                     </h2>
 
@@ -130,7 +206,6 @@ export default function SuccessPage() {
                                     className="w-full sm:w-auto shrink-0 bg-neutral-900 hover:bg-premium-600 text-white font-semibold py-2.5 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
                                 >
                                     Buka Link
-                                    <ExternalLink className="w-4 h-4" />
                                 </a>
                             </div>
                         ))}
@@ -138,12 +213,8 @@ export default function SuccessPage() {
 
                     <div className="mt-10 pt-8 border-t border-neutral-100 text-center">
                         <p className="text-sm text-neutral-500 mb-6 max-w-md mx-auto">
-                            Disarankan untuk menyimpan (bookmark) halaman ini jika Anda belum mengunduh semua materi. Semua link bersifat publik / viewer-only pada Drive Anda.
+                            Disarankan untuk menyimpan (bookmark) tautan ini jika Anda belum mengunduh semua materi. Link ini dienkripsi dengan Email Anda.
                         </p>
-                        <Link href="/" className="inline-flex items-center text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors bg-neutral-100 hover:bg-neutral-200 px-6 py-3 rounded-full">
-                            <ArrowLeft className="w-4 h-4 mr-2" />
-                            Kembali ke Halaman Beranda
-                        </Link>
                     </div>
                 </div>
             </div>
