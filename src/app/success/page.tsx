@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { CheckCircle2, ExternalLink, ArrowLeft, Folder, PlayCircle, Youtube, Globe, DownloadCloud, Sparkles, ShieldCheck, Download } from 'lucide-react';
 import Link from 'next/link';
@@ -78,11 +80,10 @@ const resources = [
     }
 ];
 
-export default async function SuccessPage({
-    searchParams
-}: {
-    searchParams: { id?: string; email?: string }
+export default async function SuccessPage(props: {
+    searchParams: Promise<{ id?: string; email?: string }>;
 }) {
+    const searchParams = await props.searchParams;
     const { id, email } = searchParams;
 
     // If we have an ID, fetch the specific transaction
