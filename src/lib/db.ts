@@ -1,9 +1,4 @@
-import { createClient, Client } from '@libsql/client/web';
-
-// Polyfill for Cloudflare Edge Runtime to prevent @libsql/client crashes
-if (typeof globalThis.XMLHttpRequest === 'undefined') {
-  (globalThis as any).XMLHttpRequest = class XMLHttpRequest { };
-}
+import { createClient, Client } from '@libsql/client/http';
 
 
 // Connection singleton with globalThis for Next.js HMR
