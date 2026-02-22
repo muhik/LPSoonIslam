@@ -75,6 +75,15 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: `Mayar Invalid Structure: ${JSON.stringify(mayarData)}` }, { status: 500 });
         }
 
+        // Store Mayar Invoice ID for cron-polling
+        const invoiceId = mayarData.data.id;
+        if (invoiceId) {
+            await db.execute({
+                sql: `UPDATE transactions SET mayar_id = ? WHERE id = ?`,
+                args: [invoiceId, newId]
+            });
+        }
+
         // Return the Mayar URL to the client
         return NextResponse.json({ url: mayarData.data.link });
 
