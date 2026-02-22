@@ -45,8 +45,15 @@ export default function CheckoutForm() {
                     router.push(data.url);
                 }
             } else {
-                console.error("Failed to checkout", await response.text());
-                alert("Terjadi kesalahan saat checkout. Silakan coba lagi.");
+                let errorMessage = "Terjadi kesalahan saat checkout.";
+                try {
+                    const data = await response.json();
+                    if (data.error) errorMessage = data.error;
+                } catch (e) {
+                    errorMessage = await response.text();
+                }
+                console.error("Failed to checkout:", errorMessage);
+                alert(`Gagal diproses: ${errorMessage}\n\nSilakan coba lagi dengan nominal yang berbeda.`);
             }
         } catch (error) {
             console.error("Checkout error:", error);

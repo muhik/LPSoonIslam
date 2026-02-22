@@ -60,14 +60,14 @@ export async function POST(request: Request) {
         if (!mayarResponse.ok) {
             const errText = await mayarResponse.text();
             console.error('Failed to create Mayar link:', errText);
-            throw new Error('Gagal menghubungi Payment Gateway Mayar');
+            return NextResponse.json({ error: `Mayar Error: ${errText}` }, { status: mayarResponse.status });
         }
 
         const mayarData = await mayarResponse.json();
 
         if (mayarData?.statusCode !== 200 || !mayarData?.data?.link) {
             console.error('Invalid response from Mayar:', mayarData);
-            throw new Error('Gagal membuat link pembayaran');
+            return NextResponse.json({ error: `Mayar Invalid Structure: ${JSON.stringify(mayarData)}` }, { status: 500 });
         }
 
         // Return the Mayar URL to the client
@@ -75,6 +75,6 @@ export async function POST(request: Request) {
 
     } catch (error: any) {
         console.error('Checkout error:', error);
-        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: `Server Error: ${error.message || 'Unknown'}` }, { status: 500 });
     }
 }
