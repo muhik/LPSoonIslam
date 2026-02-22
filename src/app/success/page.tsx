@@ -85,62 +85,77 @@ export default async function SuccessPage({
 }) {
     const { id, email } = searchParams;
 
-    if (!id) {
-        redirect('/');
+    // If we have an ID, fetch the specific transaction
+    let tx: any = null;
+    let db: any = null;
+
+    try {
+        db = await getDb();
+        if (id) {
+            const result = await db.execute({
+                sql: 'SELECT * FROM transactions WHERE id = ?',
+                args: [parseInt(id, 10)]
+            });
+            tx = result.rows[0];
+        } else if (email) {
+            // If we only have email (e.g., user searched for their transaction), get the latest one
+            const result = await db.execute({
+                sql: 'SELECT * FROM transactions WHERE email = ? ORDER BY id DESC LIMIT 1',
+                args: [email]
+            });
+            tx = result.rows[0];
+        }
+    } catch (err) {
+        console.error("Database error on success page:", err);
     }
 
-    const db = await getDb();
-    const result = await db.execute({
-        sql: 'SELECT * FROM transactions WHERE id = ?',
-        args: [parseInt(id, 10)]
-    });
+    // Security Gate: Check if Paid and Email Maps Correctly
+    const isPaid = tx?.status === 'PAID';
+    const isEmailMatched = tx && email && email.toLowerCase() === tx.email.toLowerCase();
 
-    const tx = result.rows[0] as any;
-
-    if (!tx) {
-        redirect('/');
-    }
-
-    // Security Gate: Ensure the transaction is PAID AND Email Matches the URL explicitly
-    const isPaid = tx.status === 'PAID';
-    const isEmailMatched = email && email.toLowerCase() === tx.email.toLowerCase();
-
-    // If Not Paid / Not Matched, Show the Locked Form Gate
-    if (!isPaid || !isEmailMatched) {
+    // If Not Paid / Not Matched / No Transaction Found, Show the Locked Form Gate
+    if (!tx || !isPaid || !isEmailMatched) {
         return (
             <main className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-neutral-200 text-center">
                     <ShieldCheck className="w-16 h-16 text-neutral-300 mx-auto mb-4" />
-                    <h1 className="text-2xl font-bold mb-2">Akses Terkunci</h1>
-                    {!isPaid ? (
+                    <h1 className="text-2xl font-bold mb-2">Cek Status Akses</h1>
+                    {!tx ? (
+                        <p className="text-neutral-600 mb-6">
+                            Sistem sedang menyinkronkan data pembayaran dari Mayar. Silakan masukkan <strong>Email</strong> yang Anda gunakan saat pembelian untuk melacak status transaksi Anda.
+                        </p>
+                    ) : !isPaid ? (
                         <>
                             <p className="text-neutral-600 mb-6">
-                                Pembayaran Anda berstatus <strong>Pending</strong>. Harap selesaikan pembayaran melalui link Mayar terlebih dahulu. Jika bingung, silakan hubungi WhatsApp Admin.
+                                Trx <strong>#{tx.id}</strong> berstatus <strong>Pending</strong>. Harap selesaikan pembayaran melalui link Mayar. Sistem akan otomatis merefresh halaman ini jika lunas.
                             </p>
-                            {/* Auto Refresh only applies when not paid but email matches explicitly via Mayar's redirect back */}
-                            {isEmailMatched && <AutoRefresh id={id} email={email} />}
+                            {/* Auto Refresh only applies when not paid but email matches explicitly */}
+                            {isEmailMatched && <AutoRefresh id={tx.id.toString()} email={email} />}
                         </>
                     ) : (
                         <p className="text-neutral-600 mb-6">
-                            Transaksi Anda sudah Lunas! Namun demi keamanan, masukkan <strong>Email</strong> yang Anda gunakan saat pembelian untuk membuka brankas file.
+                            Transaksi sudah Lunas! Namun demi keamanan, konfirmasi ulang <strong>Email</strong> Anda untuk membuka brankas file.
                         </p>
                     )}
 
-                    {isPaid && !isEmailMatched && (
+                    {(!isPaid || !isEmailMatched || !tx) && (
                         <form className="flex flex-col gap-4 text-left" method="GET">
-                            <input type="hidden" name="id" value={id} />
+                            {/* If we have context of the ID but need email verification */}
+                            {tx && !isEmailMatched && <input type="hidden" name="id" value={tx.id} />}
+
                             <div>
                                 <label className="block text-sm font-semibold mb-1 text-neutral-700">Email Pembeli</label>
                                 <input
                                     type="email"
                                     name="email"
                                     required
+                                    defaultValue={email || ''}
                                     placeholder="contoh@gmail.com"
                                     className="w-full px-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-premium-500 focus:outline-none"
                                 />
                             </div>
                             <button type="submit" className="w-full bg-premium-600 hover:bg-premium-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">
-                                Buka Brankas Mode Aman
+                                {tx ? "Buka Brankas Mode Aman" : "Cek Status Pembayaran"}
                             </button>
                         </form>
                     )}

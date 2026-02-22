@@ -10,9 +10,14 @@ export default function Home() {
             <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-neutral-200">
                 <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
                     <div className="font-bold text-xl tracking-tight text-premium-600">eBookPremium</div>
-                    <Link href="#checkout" className="bg-premium-600 hover:bg-premium-700 text-white px-5 py-2 rounded-full font-medium transition-colors shadow-sm">
-                        Beli Sekarang
-                    </Link>
+                    <div className="flex items-center gap-4">
+                        <Link href="/success" className="text-sm font-semibold text-neutral-600 hover:text-premium-600 transition-colors hidden sm:block">
+                            Cek Pesanan
+                        </Link>
+                        <Link href="#checkout" className="bg-premium-600 hover:bg-premium-700 text-white px-5 py-2 rounded-full font-medium transition-colors shadow-sm text-sm">
+                            Beli Sekarang
+                        </Link>
+                    </div>
                 </div>
             </header>
 
