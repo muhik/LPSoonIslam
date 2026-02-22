@@ -62,17 +62,8 @@ export async function getDb(): Promise<Client> {
         const encoder = new TextEncoder();
         const data = encoder.encode(defaultPassword);
 
-        // Edge Runtime global crypto fallback pattern
-        let subtleCrypto: SubtleCrypto;
-
-        // Next.js Dev/Node environment fallback vs Cloudflare Edge global
-        if (typeof crypto !== 'undefined' && crypto.subtle) {
-          subtleCrypto = crypto.subtle;
-        } else {
-          // Safe static import for local Node.js environment during dev
-          const nodeCrypto = require('crypto');
-          subtleCrypto = nodeCrypto.webcrypto.subtle;
-        }
+        // Edge & Node 18+ standard Web Crypto API
+        const subtleCrypto = globalThis.crypto.subtle;
 
         const hashBuffer = await subtleCrypto.digest('SHA-256', data);
         const hashArray = Array.from(new Uint8Array(hashBuffer));

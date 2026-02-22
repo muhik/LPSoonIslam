@@ -25,15 +25,8 @@ export async function POST(request: Request) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
 
-        // Edge Runtime global crypto fallback pattern
-        let subtleCrypto: SubtleCrypto;
-
-        if (typeof crypto !== 'undefined' && crypto.subtle) {
-            subtleCrypto = crypto.subtle;
-        } else {
-            const nodeCrypto = require('crypto');
-            subtleCrypto = nodeCrypto.webcrypto.subtle;
-        }
+        // Edge & Node 18+ standard Web Crypto API
+        const subtleCrypto = globalThis.crypto.subtle;
 
         const hashBuffer = await subtleCrypto.digest('SHA-256', data);
         const hashArray = Array.from(new Uint8Array(hashBuffer));
@@ -59,8 +52,8 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Login error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+        return NextResponse.json({ error: `Server Error: ${error?.message || String(error)}` }, { status: 500 });
     }
 }
