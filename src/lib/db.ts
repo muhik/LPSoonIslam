@@ -1,5 +1,10 @@
 import { createClient, Client } from '@libsql/client/web';
 
+// Polyfill for Cloudflare Edge Runtime to prevent @libsql/client crashes
+if (typeof globalThis.XMLHttpRequest === 'undefined') {
+  (globalThis as any).XMLHttpRequest = class XMLHttpRequest { };
+}
+
 
 // Connection singleton with globalThis for Next.js HMR
 const globalForDb = globalThis as unknown as {
@@ -18,6 +23,7 @@ export async function getDb(): Promise<Client> {
     db = createClient({
       url,
       authToken,
+      fetch: (val: any, init: any) => fetch(val, init)
     });
 
     if (process.env.NODE_ENV !== 'production') globalForDb.libsqlClient = db;
