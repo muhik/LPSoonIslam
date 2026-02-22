@@ -44,12 +44,19 @@ export async function POST(request: Request) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                name: name, // Mayar uses 'name' for Customer Name in invoice/create
+                name: name,
                 email: email,
                 amount: parseInt(amount, 10),
                 mobile: phone,
                 redirectUrl: `${baseUrl}/success?id=${newId}&email=${encodeURIComponent(email)}`,
-                description: `Akses 14.000 Worksheet (Bayar Seikhlasnya)`
+                description: `Akses 14.000 Worksheet (Bayar Seikhlasnya)`,
+                items: [
+                    {
+                        name: "14.000++ Worksheet Anak",
+                        quantity: 1,
+                        price: parseInt(amount, 10)
+                    }
+                ]
             })
         });
 
