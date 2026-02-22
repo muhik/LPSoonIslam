@@ -18,16 +18,9 @@ export default function CheckoutForm() {
 
         const payload = new FormData();
         payload.append('amount', amount);
-
-        if (isBypass) {
-            payload.append('name', "User Uji Coba (Bypass)");
-            payload.append('email', "bypass@example.com");
-            payload.append('phone', "081234567890");
-        } else {
-            payload.append('name', name);
-            payload.append('email', email);
-            payload.append('phone', phone);
-        }
+        payload.append('name', name);
+        payload.append('email', email);
+        payload.append('phone', phone);
 
         try {
             const response = await fetch('/api/checkout', {
@@ -77,6 +70,7 @@ export default function CheckoutForm() {
                         onChange={(e) => setAmount(e.target.value)}
                         className="w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-premium-500 focus:border-premium-500 text-lg outline-none transition-shadow font-normal text-neutral-700"
                         required
+                        min="10000"
                     />
                 </div>
             </div>
@@ -129,17 +123,6 @@ export default function CheckoutForm() {
                 >
                     <Download className="w-5 h-5" />
                     {loading ? "Memproses..." : "Pesan Sekarang & Dapatkan Akses"}
-                </button>
-
-                {/* Bypass Button for Admin Testing */}
-                <button
-                    type="button"
-                    disabled={loading}
-                    onClick={() => handleSubmit(undefined, true)}
-                    className="w-full sm:w-auto px-6 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 font-semibold py-4 rounded-xl transition-all flex items-center justify-center border border-neutral-300 whitespace-nowrap disabled:opacity-50"
-                    title="Isi data otomatis & Submit"
-                >
-                    Bypass Tes
                 </button>
             </div>
 
