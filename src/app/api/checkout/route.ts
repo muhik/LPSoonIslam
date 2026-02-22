@@ -37,7 +37,7 @@ export async function POST(request: Request) {
         const requestUrl = new URL(request.url);
         const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
 
-        const mayarResponse = await fetch('https://api.mayar.id/hl/v1/payment/link/create', {
+        const mayarResponse = await fetch('https://api.mayar.id/hl/v1/payment/create', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${mayarApiKey}`,
