@@ -5,6 +5,12 @@ import { CheckCircle2, ArrowLeft, Folder, PlayCircle, Youtube, Globe, DownloadCl
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 
+declare global {
+    interface Window {
+        fbq: any;
+    }
+}
+
 const resources = [
     {
         title: "1000 Worksheet Islam",
@@ -148,6 +154,16 @@ function SuccessContent() {
     const isPaid = tx?.status === 'PAID';
     const isMatched = tx && emailStr && tx.email.toLowerCase() === emailStr.toLowerCase();
 
+    // Trigger Facebook Pixel Purchase event when verification succeeds
+    useEffect(() => {
+        if (isPaid && isMatched && typeof window !== 'undefined' && window.fbq) {
+            window.fbq('track', 'Purchase', {
+                currency: 'IDR',
+                value: Number(tx?.amount || 10000)
+            });
+        }
+    }, [isPaid, isMatched, tx?.amount]);
+
     if (!tx || !isPaid || !isMatched) {
         return (
             <main className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
@@ -221,17 +237,6 @@ function SuccessContent() {
                     <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-green-200">
                         <CheckCircle2 className="w-10 h-10" />
                     </div>
-
-                    {/* FB Pixel Trigger */}
-                    <script
-                        dangerouslySetInnerHTML={{
-                            __html: `
-                              if (typeof fbq === 'function') {
-                                fbq('track', 'Purchase', { currency: 'IDR', value: ${tx.amount || 10000} });
-                              }
-                            `,
-                        }}
-                    />
 
                     <h1 className="text-3xl font-extrabold text-neutral-900 mb-3 tracking-tight">Pembayaran Berhasil! 🎉</h1>
                     <p className="text-lg text-neutral-600 max-w-xl mx-auto leading-relaxed">
