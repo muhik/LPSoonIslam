@@ -27,7 +27,7 @@ export default function Home() {
                     🌟 Promo Spesial Hari Ini
                 </div>
                 <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
-                    14.000++ Worksheet Anak (Versi Bayar Seikhlasnya)
+                    14.000++ Worksheet Anak Eksklusif Berkualitas
                 </h1>
                 <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl mx-auto">
                     Dapatkan ribuan materi edukatif anak lengkap dalam satu link Google Drive. Tinggal download dan print!
@@ -53,7 +53,7 @@ export default function Home() {
                         "Akses seumur hidup via Google Drive",
                         "Ribuan materi siap print (PDF berkualitas)",
                         "Bonus materi edukasi tambahan",
-                        "Harga spesial hanya hari ini (Bayar Seikhlasnya!)"
+                        "Harga promo termurah (Akses Penuh Selamanya)"
                     ].map((feature, i) => (
                         <div key={i} className="flex items-start bg-white p-4 rounded-xl border border-neutral-100 shadow-sm">
                             <CheckCircle2 className="w-5 h-5 text-premium-500 mt-0.5 shrink-0" />
@@ -67,19 +67,19 @@ export default function Home() {
             <section className="bg-white py-16 border-y border-neutral-200">
                 <div className="max-w-3xl mx-auto px-4 space-y-6 text-lg text-neutral-700 leading-relaxed">
                     <p>
-                        🔥 <strong>Silakan isi nominal terbaik</strong> dari kakak sebagai penyemangat kami &amp; semakin semangat buat update produk keren lainnya! 😍
+                        🔥 <strong>Bunda, masa keemasan anak tak akan pernah terulang.</strong> Berikan mereka stimulus terbaik di usia pertumbuhannya! 😍
                     </p>
                     <p>
-                        <strong>14.000 ASET PENDIDIKAN + MODAL BISNIS DALAM SATU KLIK (BAYAR SEIKHLASNYA)</strong> 🎉🥳
+                        <strong>14.000+ ASET PENDIDIKAN DAN BERBAGAI BONUS KONTEN EKSKLUSIF</strong> 🎉
                     </p>
                     <p>
-                        Mau bikin anak pinter sekaligus punya aset digital buat dijual lagi? Ini solusinya! Kami rangkum 2.000+ Worksheet Muslim, 12.000+ Worksheet Umum.
+                        Alihkan sejenak <em>gadget</em> mereka dengan aktivitas fisik yang mengasah otak dan kemampuan motoriknya. Terdiri dari ratusan materi bernuansa Islami (Sholat, Wudhu, Menulis Huruf Hijaiyah) dan puluhan ribu materi berhitung, mewarnai, serta aneka <em>games</em> visual lainnya.
                     </p>
                     <p>
-                        <em>Kenapa Harganya Terserah Anda?</em> Kami ingin berbagi manfaat seluas-luasnya. Ilmu tidak boleh mahal. Namun, di balik kemudahan ini, ada tim yang bekerja keras menyortir ribuan file agar siap Kakak pakai.
+                        <em>Berapa harga investasi pendidikan ini?</em> Di luar sana, kumpulan buku senilai belasan ribu halaman bisa memakan biaya ratusan ribu hingga jutaan rupiah. Namun, khusus hari ini kami memberikan harga pangkas habis-habisan!
                     </p>
                     <p>
-                        Oleh karena itu, mohon maaf sebelumnya ya Kak 🙏. Izin kami menetapkan apresiasi <strong>minimal Rp10.000 saja</strong>. Anggaplah nominal ini sebagai pengganti "biaya penyetoran konten" (iklan) agar info ini bisa sampai ke beranda Kakak. Selebihnya? Terserah keikhlasan Kakak. 💖
+                        Miliki ribuan aset file cemerlang ini <strong>hanya mulai dari Rp35.000 saja</strong>. Sekali bayar untuk asupan ilmu tanpa batas. Silakan selesaikan pembayaran Kakak hari ini sebelum harga promo kami tarik kembali! 💖
                     </p>
                 </div>
             </section>
