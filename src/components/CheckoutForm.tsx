@@ -84,7 +84,7 @@ export default function CheckoutForm() {
                         onChange={(e) => setAmount(e.target.value)}
                         className="w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 focus:ring-2 focus:ring-premium-500 focus:border-premium-500 text-lg outline-none transition-shadow font-normal text-neutral-700"
                         required
-                        min="10000"
+                        min="35000"
                     />
                 </div>
             </div>
