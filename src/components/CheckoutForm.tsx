@@ -4,6 +4,12 @@ import React, { useState } from 'react';
 import { Download, ShieldCheck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+declare global {
+    interface Window {
+        fbq: any;
+    }
+}
+
 export default function CheckoutForm() {
     const router = useRouter();
     const [amount, setAmount] = useState('35000');
@@ -23,6 +29,14 @@ export default function CheckoutForm() {
         payload.append('phone', phone);
 
         try {
+            // Track AddToCart / InitiateCheckout event for Facebook Pixel
+            if (typeof window !== 'undefined' && window.fbq) {
+                window.fbq('track', 'InitiateCheckout', {
+                    currency: 'IDR',
+                    value: Number(amount)
+                });
+            }
+
             const response = await fetch('/api/checkout', {
                 method: 'POST',
                 body: payload,
