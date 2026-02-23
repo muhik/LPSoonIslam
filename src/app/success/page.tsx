@@ -20,6 +20,13 @@ const resources = [
         icon: Folder
     },
     {
+        title: "Koleksi Kisah Para Nabi & Cerita Islami Anak",
+        desc: "25 file PDF cerita edukasi islami lengkap full color siap baca/print.",
+        url: "https://drive.google.com/drive/folders/1sSksrIhenwBG6nqFGOAHFWIUakDW_2hW",
+        type: "drive",
+        icon: Folder
+    },
+    {
         title: "30 Animasi Kisah Nabi & Sahabat",
         desc: "File MP4 animasi kisah inspiratif Islami siap tonton.",
         url: "https://drive.google.com/drive/folders/1JcK6t765zs09JhFBUtPVy8F3oegVGOVG",
@@ -41,22 +48,15 @@ const resources = [
         icon: Folder
     },
     {
-        title: "Video Edukasi Anak Muslim (Yufid)",
-        desc: "Ratusan video edukasi resmi (animasi wudu, salat, doa). Bisa diunduh langsung.",
-        url: "https://yufid.com/category/video/video-anak/",
-        type: "web",
-        icon: Globe
-    },
-    {
-        title: "Drive Public Spesial Ramadhan",
-        desc: "Koleksi Super Lengkap: Worksheet + Aktivitas menyambut bulan suci.",
-        url: "https://drive.google.com/drive/folders/1wWjIJGANRHtsiheDOLPtzXkrTfj5IzdP",
+        title: "Aktivitas & Worksheet Spesial Ramadhan",
+        desc: "23 file gambar + worksheet eksklusif menyambut bulan suci Ramadhan.",
+        url: "https://drive.google.com/drive/folders/1-M6ltOXYniwmZSb376U9ch-4uMzAUnPq",
         type: "drive",
         icon: DownloadCloud
     },
     {
-        title: "Tambahan Spesial Ramadhan",
-        desc: "Koleksi Video + Audio Islami Ramadhan.",
+        title: "Koleksi Video + Audio Islami Ramadhan.",
+        desc: "Koleksi audio dan video spesial untuk Ramadhan anak.",
         url: "https://drive.google.com/drive/folders/1E-E0UUk-wp0bhgJfMCZpBbjGYgcVUjsJ",
         type: "video",
         icon: PlayCircle
@@ -69,15 +69,8 @@ const resources = [
         icon: Youtube
     },
     {
-        title: "18 File PDF Besar (Worksheet)",
-        desc: "Total ribuan halaman siap cetak/print massal.",
-        url: "https://drive.google.com/drive/folders/157HarZd-AGAgijGQsjfWMGAG-8sy1ywx",
-        type: "drive",
-        icon: Folder
-    },
-    {
         title: "Bonus Spesial AI: Materi Islami Anak Eksklusif",
-        desc: "Kumpulan konten edukatif Islami anak pilihan (Kurasi khusus oleh Gemini 3.1 Pro & Opus Think 4.6).",
+        desc: "Kumpulan konten edukatif Islami anak pilihan.",
         url: "https://drive.google.com/drive/folders/157HarZd-AGAgijGQsjfWMGAG-8sy1ywx",
         type: "drive",
         icon: Sparkles
