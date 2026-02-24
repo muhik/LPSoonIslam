@@ -43,7 +43,7 @@ export default function Home() {
                     <img
                         src="/iklanpapanworksheet.jpg"
                         alt="Detail Isi Produk"
-                        className="w-full h-auto rounded-3xl shadow-2xl border border-neutral-200 object-contain hover:scale-[1.02] transition-transform duration-500 cursor-pointer"
+                        className="w-full max-w-md h-auto rounded-3xl shadow-2xl border border-neutral-200 object-contain hover:scale-[1.02] transition-transform duration-500 cursor-pointer"
                     />
                 </div>
 
