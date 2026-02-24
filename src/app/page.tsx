@@ -88,37 +88,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* WhatsApp Coaching CTA */}
-            <section className="max-w-3xl mx-auto px-4 mt-16 mb-8 text-center">
-                <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-3xl p-6 md:p-10 border border-green-200 shadow-sm relative overflow-hidden">
-                    {/* Decorative Elements */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-2xl opacity-50 translate-x-10 -translate-y-10"></div>
-                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-green-300 rounded-full mix-blend-multiply filter blur-2xl opacity-30 -translate-x-10 translate-y-10"></div>
-
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-md border border-green-100">
-                            <svg className="w-8 h-8 text-green-500" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.005-5.074 4.138-9.206 9.214-9.206 5.083 0 9.213 4.134 9.213 9.206 0 5.074-4.136 9.209-9.214 9.209h-.276z" />
-                            </svg>
-                        </div>
-                        <h2 className="text-2xl md:text-3xl font-extrabold text-green-900 mb-3 tracking-tight">
-                            Bingung Cara Mulai Jualannya?
-                        </h2>
-                        <p className="text-lg text-green-800 mb-6 max-w-xl">
-                            Tenang, Bunda dan Kakak tidak sendirian! Dapatkan <strong>bimbingan EKSKLUSIF langsung via WhatsApp.</strong> Kami ajarkan cara meraup untung dari nol sampai <em>closing</em>!
-                        </p>
-                        <a
-                            href="https://wa.me/6289666639360?text=Halo%20Admin,%20saya%20mau%20dibimbing%20cara%20jualan%20bundle%20Worksheet%20PLR-nya"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-8 rounded-full transition-all shadow-[0_0_15px_rgba(34,197,94,0.4)] hover:shadow-[0_0_20px_rgba(34,197,94,0.6)] hover:scale-105"
-                        >
-                            Chat WA Admin untuk Bimbingan Pendampingan
-                        </a>
-                    </div>
-                </div>
-            </section>
-
             {/* Checkout Section CTA */}
             <section id="checkout" className="max-w-2xl mx-auto px-4 mt-16">
                 <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-neutral-200 sticky top-24">

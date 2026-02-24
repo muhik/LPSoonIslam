@@ -269,7 +269,32 @@ function SuccessContent() {
                         ))}
                     </div>
 
-                    <div className="mt-10 pt-8 border-t border-neutral-100 text-center">
+                    <div className="mt-12 mb-4 bg-gradient-to-r from-green-50 to-green-100 rounded-3xl p-6 md:p-8 border border-green-200 shadow-sm relative overflow-hidden text-center">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-50 translate-x-8 -translate-y-8"></div>
+                        <div className="absolute bottom-0 left-0 w-24 h-24 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 -translate-x-8 translate-y-8"></div>
+
+                        <div className="relative z-10 flex flex-col items-center">
+                            <h3 className="text-xl md:text-2xl font-extrabold text-green-900 mb-2 tracking-tight">
+                                Siap Banjir Cuan? 💸
+                            </h3>
+                            <p className="text-green-800 mb-5 max-w-lg mx-auto text-sm md:text-base">
+                                Dapatkan bimbingan eksklusif langsung via WhatsApp. Kami akan pastikan investasi Anda balik modal secepatnya!
+                            </p>
+                            <a
+                                href="https://wa.me/6289666639360?text=Halo%20Kak%20Azlan,%20saya%20sudah%20beli%20bundle%20PLR-nya.%20Mohon%20masukkan%20saya%20ke%20grup/bimbingan%20jualannya%20ya!"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition-all shadow-md hover:shadow-lg hover:scale-105 text-sm"
+                            >
+                                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zM12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" />
+                                </svg>
+                                Dapatkan Bimbingan Jualan di WA
+                            </a>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 pt-8 border-t border-neutral-100 text-center">
                         <p className="text-sm text-neutral-500 mb-6 max-w-md mx-auto">
                             Disarankan untuk menyimpan (bookmark) tautan ini jika Anda belum mengunduh semua materi. Link ini dienkripsi dengan Email Anda.
                         </p>
