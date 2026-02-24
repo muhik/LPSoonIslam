@@ -30,7 +30,7 @@ export default function Home() {
                     14.000++ Worksheet Anak Eksklusif Berkualitas
                 </h1>
                 <p className="text-lg md:text-xl text-neutral-600 mb-8 max-w-2xl mx-auto">
-                    Dapatkan ribuan materi edukatif anak lengkap dalam satu link Google Drive. Tinggal download dan print!
+                    Dapatkan ribuan materi edukatif anak terlengkap. <strong>Dipakai sendiri bikin pintar, dijual lagi bikin cuan!</strong>
                 </p>
 
                 {/* Product Images */}
@@ -51,6 +51,7 @@ export default function Home() {
                 <div className="grid sm:grid-cols-2 gap-4 max-w-3xl mx-auto text-left mb-16">
                     {[
                         "Akses seumur hidup via Google Drive",
+                        "Lisensi Bisnis PLR (Bebas Dijual Ulang, Untung 100% Milik Anda)",
                         "Ribuan materi siap print (PDF berkualitas)",
                         "Bonus materi edukasi tambahan",
                         "Harga promo termurah (Akses Penuh Selamanya)"
@@ -79,7 +80,10 @@ export default function Home() {
                         <em>Berapa harga investasi pendidikan ini?</em> Di luar sana, kumpulan buku senilai belasan ribu halaman bisa memakan biaya ratusan ribu hingga jutaan rupiah. Namun, khusus hari ini kami memberikan harga pangkas habis-habisan!
                     </p>
                     <p>
-                        Miliki ribuan aset file cemerlang ini <strong>hanya mulai dari Rp35.000 saja</strong>. Sekali bayar untuk asupan ilmu tanpa batas. Silakan selesaikan pembayaran Kakak hari ini sebelum harga promo kami tarik kembali! 💖
+                        Menariknya lagi, Bundle 14.000+ Aset ini dilengkapi dengan <strong>Lisensi Bisnis PLR (Private Label Rights)</strong>. Artinya Bunda tidak hanya berinvestasi untuk kecerdasan anak, tapi Bunda punya Hak Penuh untuk menjual ulang seluruh file PDF ini berkali-kali! Bayangkan modal cuma Rp35.000, Bunda bisa langsung balik modal (BEP) hanya dengan 1 pembeli pertama. Gimana kalau laku puluhan kali?
+                    </p>
+                    <p>
+                        Miliki ribuan aset file cemerlang dan mesin uang digital ini <strong>hanya mulai dari Rp35.000 saja</strong>. Sekali bayar untuk ilmu dan modal bisnis seumur hidup. Silakan selesaikan pembayaran Bunda hari ini sebelum harga promo kami tarik kembali! 💖
                     </p>
                 </div>
             </section>
