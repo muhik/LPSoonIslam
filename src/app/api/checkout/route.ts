@@ -9,6 +9,11 @@ export async function POST(request: Request) {
         const email = formData.get('email') as string;
         const phone = formData.get('phone') as string;
         const amount = formData.get('amount') as string;
+        const parsedAmount = parseInt(amount, 10);
+
+        if (isNaN(parsedAmount) || parsedAmount < 35000) {
+            return NextResponse.json({ error: 'Minimum pembayaran adalah Rp 35.000' }, { status: 400 });
+        }
 
         const db = await getDb();
 
@@ -18,7 +23,7 @@ export async function POST(request: Request) {
             INSERT INTO transactions (name, email, phone, amount)
             VALUES (?, ?, ?, ?)
           `,
-            args: [name, email, phone, parseInt(amount, 10)]
+            args: [name, email, phone, parsedAmount]
         });
 
         const newId = info.lastInsertRowid?.toString();
@@ -46,17 +51,17 @@ export async function POST(request: Request) {
             body: JSON.stringify({
                 name: name,
                 email: email,
-                amount: parseInt(amount, 10),
+                amount: parsedAmount,
                 mobile: phone,
                 redirectUrl: `${baseUrl}/success?id=${newId}&email=${encodeURIComponent(email)}`,
-                description: `Akses 14.000 Worksheet (Bayar Seikhlasnya)`,
+                description: `Akses Bundle 14.000+ Worksheet Anak`,
                 items: [
                     {
                         name: "14.000++ Worksheet Anak",
                         description: "Pembelian Bundle Digital",
                         quantity: 1,
-                        price: parseInt(amount, 10),
-                        rate: parseInt(amount, 10)
+                        price: parsedAmount,
+                        rate: parsedAmount
                     }
                 ]
             })
