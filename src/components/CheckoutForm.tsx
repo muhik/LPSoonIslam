@@ -157,7 +157,7 @@ export default function CheckoutForm() {
 
             <div className="flex flex-col w-full">
                 <a
-                    href="https://wa.me/6289666639360?text=Halo%20Kak%20Azlan,%20saya%20agak%20bingung%20isi%20formnya.%20Boleh%20Pesan%20Bundle%2014.000%20Worksheet%20PLR-nya%20secara%20manual%20aja%20(Transfer%20Langsung)?"
+                    href="https://wa.me/6289666639360?text=Halo%20Kak%20Ikbal,%20saya%20agak%20bingung%20isi%20formnya.%20Boleh%20Pesan%20Bundle%2014.000%20Worksheet%20PLR-nya%20secara%20manual%20aja%20(Transfer%20Langsung)?"
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => {

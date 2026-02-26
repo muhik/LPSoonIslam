@@ -281,7 +281,7 @@ function SuccessContent() {
                                 Dapatkan bimbingan eksklusif langsung via WhatsApp. Kami akan pastikan investasi Anda balik modal secepatnya!
                             </p>
                             <a
-                                href="https://wa.me/6289666639360?text=Halo%20Kak%20Azlan,%20saya%20sudah%20beli%20bundle%20PLR-nya.%20Mohon%20masukkan%20saya%20ke%20grup/bimbingan%20jualannya%20ya!"
+                                href="https://wa.me/6289666639360?text=Halo%20Kak%20Ikbal,%20saya%20sudah%20beli%20bundle%20PLR-nya.%20Mohon%20masukkan%20saya%20ke%20grup/bimbingan%20jualannya%20ya!"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full transition-all shadow-md hover:shadow-lg hover:scale-105 text-sm"
