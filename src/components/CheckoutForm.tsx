@@ -72,6 +72,15 @@ export default function CheckoutForm() {
 
     return (
         <form className="space-y-5" onSubmit={handleSubmit}>
+            {/* Trust / Value Proposition Banner */}
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 shadow-sm">
+                <p className="flex items-start gap-2">
+                    <span className="text-xl">💡</span>
+                    <span>
+                        <strong>Keputusan Tepat!</strong> Hanya dengan investasi senilai 1 cangkir kopi (Rp35.000), Bunda sudah mendapatkan akses <strong>14.000+ Aset Digital Edukatif</strong> plus <strong>Hak Jual Ulang 100% Profit</strong> seumur hidup.
+                    </span>
+                </p>
+            </div>
             {/* Price Input */}
             <div>
                 <label className="block text-sm font-semibold text-neutral-700 mb-1">Berapa Nominal Terbaikmu?</label>
