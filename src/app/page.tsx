@@ -33,6 +33,20 @@ export default function Home() {
                     Dapatkan ribuan materi edukatif anak terlengkap. <strong>Dipakai sendiri bikin pintar, dijual lagi bikin cuan!</strong>
                 </p>
 
+                {/* DANA Cashback Badge */}
+                <div className="bg-gradient-to-r from-[#118EEA] to-[#0ea5e9] text-white p-4 rounded-2xl shadow-xl mb-10 max-w-2xl mx-auto flex items-center justify-center gap-4 border-2 border-[#118EEA]/20 transform hover:-translate-y-1 transition-transform cursor-default relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <span className="text-4xl animate-bounce drop-shadow-md">💸</span>
+                    <div className="text-left z-10">
+                        <p className="font-extrabold text-sm md:text-base uppercase tracking-wider text-yellow-300 drop-shadow-sm">
+                            🔥 SUPER PROMO HARI INI
+                        </p>
+                        <p className="text-sm md:text-base text-white font-medium mt-0.5 leading-snug">
+                            Khusus 50 Pembeli Pertama Dapat <strong>CASHBACK Saldo DANA!</strong>
+                        </p>
+                    </div>
+                </div>
+
                 {/* Product Images */}
                 <div className="relative w-full max-w-2xl mx-auto flex flex-col gap-8 mb-12 items-center justify-center">
                     <img
