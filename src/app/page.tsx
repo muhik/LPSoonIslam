@@ -5,7 +5,7 @@ import CheckoutForm from '@/components/CheckoutForm';
 
 export default function Home() {
     return (
-        <main className="min-h-screen bg-neutral-50 text-neutral-900 pb-20">
+        <main className="min-h-screen bg-checkerboard shadow-vignette text-neutral-900 pb-20">
             {/* Navbar / Header */}
             <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-neutral-200">
                 <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
